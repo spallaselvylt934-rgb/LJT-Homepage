@@ -43,6 +43,15 @@ jobs:
       - name: Minify JS files
         run: |
           uglifyjs assets/js/plugins/jquery.greedy-navigation.js assets/js/_main.js assets/js/theme.js -c -m -o assets/js/main.min.js
+      - name: Enable GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" > /dev/null 2>&1; then
+            echo "GitHub Pages is already enabled."
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/pages" -f build_type=workflow
+          fi
       - name: Configure GitHub Pages
         id: pages
         uses: actions/configure-pages@v6.0.0
